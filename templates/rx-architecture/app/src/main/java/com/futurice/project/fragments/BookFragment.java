@@ -25,6 +25,7 @@ public class BookFragment extends Fragment {
     private BiographiesModel biographiesModel;
     private Observable<Book> bookStream = Observable.empty(); // instead of null as default
 
+    
     private TextView bookNameTextView;
     private TextView bookAuthorTextView;
     private TextView bookPriceTextView;
