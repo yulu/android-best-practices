@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
@@ -25,10 +27,14 @@ public class BookFragment extends Fragment {
     private BiographiesModel biographiesModel;
     private Observable<Book> bookStream = Observable.empty(); // instead of null as default
 
+    @InjectView(R.id.title)
+    TextView bookNameTextView;
     
-    private TextView bookNameTextView;
-    private TextView bookAuthorTextView;
-    private TextView bookPriceTextView;
+    @InjectView(R.id.author)
+    TextView bookAuthorTextView;
+    
+    @InjectView(R.id.price)
+    TextView bookPriceTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,15 +46,15 @@ public class BookFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
         Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.inject(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bookNameTextView = (TextView) getView().findViewById(R.id.title);
-        bookAuthorTextView = (TextView) getView().findViewById(R.id.author);
-        bookPriceTextView = (TextView) getView().findViewById(R.id.price);
+
         bookStream = getBiographyBookOf("Steve");
     }
 
@@ -118,5 +124,11 @@ public class BookFragment extends Fragment {
     public void onPause() {
         super.onPause();
         compositeSubscription.clear();
+    }
+
+    @Override 
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 }

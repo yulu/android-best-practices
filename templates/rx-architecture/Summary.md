@@ -98,7 +98,7 @@ Having a top-level `app` is useful to distinguish your app from other library pr
 
 _Don't do this_. This would appear in the version control system.
 
-```groovy
+```
 signingConfigs {
     release {
         storeFile file("myapp.keystore")
@@ -136,7 +136,7 @@ signingConfigs {
 
 **Prefer Maven dependency resolution instead of importing jar files.** If you explicitly include jar files in your project, they will be of some specific frozen version, such as `2.1.1`. Downloading jars and handling updates is cumbersome, this is a problem that Maven solves properly, and is also encouraged in Android Gradle builds. You can specify a range of versions, such as `2.1.+` and Maven will handle the automatic update to the most recent version matching that pattern. Example:
 
-```groovy
+```
 dependencies {
     compile 'com.netflix.rxjava:rxjava-core:0.19.+'
     compile 'com.netflix.rxjava:rxjava-android:0.19.+'
@@ -433,6 +433,7 @@ Android SDK's testing framework is still infant, specially regarding UI tests. A
 
 **Use [Robolectric](http://robolectric.org/) only for unit tests, not for views.** It is a test framework seeking to provide tests "disconnected from device" for the sake of development speed, suitable specially for unit tests on models and view models. However, testing under Robolectric is inaccurate and incomplete regarding UI tests. You will have problems testing UI elements related to animations, dialogs, etc, and this will be complicated by the fact that you are "walking in the dark" (testing without seeing the screen being controlled).
 
+<!--
 **[Robotium](https://code.google.com/p/robotium/) makes writing UI tests easy.** You do not need Robotium for running connected tests for UI cases, but it will probably be beneficial to you because of its many helpers to get and analyse views, and control the screen. Test cases will look as simple as:
 
 ```java
@@ -442,6 +443,10 @@ solo.clickOnText("Preferences");
 solo.clickOnText("Edit File Extensions");
 Assert.assertTrue(solo.searchText("rtf"));
 ```
+-->
+**Use [Espresso](https://code.google.com/p/android-test-kit/wiki/EspressoStartGuide) for UI tests.**
+
+**Use [Spoon](http://square.github.io/spoon/) for multiple devices tests**
 
 ### Emulators
 

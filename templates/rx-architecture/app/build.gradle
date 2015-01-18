@@ -9,6 +9,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'spoon'
 apply plugin: 'checkstyle'
 apply plugin: 'robolectric'
 
@@ -30,9 +31,18 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.android.support:support-v4:21.0.+'
 
-    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.1'
-
-    androidTestCompile('junit:junit:4.11')
+    //device test
+    androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
+    androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
+    androidTestCompile 'com.squareup.spoon:spoon-client:1.1.2'
+    
+    //unit test
+    androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
+    androidTestCompile('junit:junit:4.11'){
+        exclude module: 'hamcrest-core'
+    }
     androidTestCompile('org.robolectric:robolectric:2.3') {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
@@ -52,6 +62,10 @@ dependencies {
     }
 }
 
+configurations {
+    androidTestCompile.exclude group: 'com.android.support', module: 'support-v4'
+}
+
 android {
     compileSdkVersion 21
     buildToolsVersion "20.0.0"
@@ -61,6 +75,7 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
     }
     signingConfigs {
         release {
@@ -95,6 +110,7 @@ android {
     }
 }
 
+//robolectric
 robolectric {
     include '**/*Test.class'
     exclude '**/device/**/*.class'
@@ -107,6 +123,12 @@ task checkstyle(type: Checkstyle) {
     include '**/*.java'
     exclude '**/gen/**'
     classpath = files() // empty because unnecessary for checkstyle
+}
+
+//spoon
+spoon {
+    debug = true
+    failIfNoDeviceConnected = true
 }
 
 // Get location of adb
