@@ -1,26 +1,21 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
-        classpath 'org.robolectric:robolectric-gradle-plugin:0.14.+'
-    }
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'spoon'
+apply plugin: 'jacoco'
 apply plugin: 'checkstyle'
 apply plugin: 'robolectric'
 
 dependencies {
+    //android
+    compile 'com.android.support:support-v4:21.0.+'
+    
     //ui
     compile 'com.jakewharton:butterknife:6.0.0'
-
+    
+    //rxjava
     compile 'io.reactivex:rxjava:1.0.+'
     compile 'io.reactivex:rxandroid:0.23.+'
     
-    //jason
+    //json
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.+'
     compile 'com.fasterxml.jackson.core:jackson-core:2.4.+'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.+'
@@ -29,7 +24,6 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.6.1'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
-    compile 'com.android.support:support-v4:21.0.+'
 
     //device test
     androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
@@ -108,6 +102,8 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'LICENSE.txt'
     }
+    
+
 }
 
 //robolectric
@@ -116,6 +112,7 @@ robolectric {
     exclude '**/device/**/*.class'
 }
 
+//check style
 task checkstyle(type: Checkstyle) {
     description 'Checks if the code is somewhat acceptable'
     configFile file('./checkstyle.xml')
@@ -131,28 +128,58 @@ spoon {
     failIfNoDeviceConnected = true
 }
 
-// Get location of adb
-Properties localProperties = new Properties()
-try {
-    localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+//jacoco setting
+jacoco {
+    toolVersion = "0.7.0.201403182114"
 }
-catch (ex) {
-    throw new InvalidUserDataException("You should define the path to your Android SDK as a " +
-        "property `sdk.dir` in local.properties on the project root."
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
+    group = "Reporting"
+
+    description = "Generate Jacoco coverage reports for Android sources"
+
+    classDirectories = fileTree(
+            dir: '../app/build/intermediates/classes/debug',
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
     )
-}
-def adb = localProperties.getProperty('sdk.dir') + '/platform-tools/adb'
 
-task runDebug(dependsOn: 'installDebug') {
-    description 'Runs the debug-flavour of the app on the connected device'
-    doLast {
-        exec{commandLine "$adb", "shell", "am", "start", "-n", "com.futurice.project/.MainActivity"}
+    def coverageSourceDirs = ['../app/src/main/java']
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files('../app/build/jacoco/testDebug.exec')
+
+    reports {
+        html.enabled = true
+        html.destination "$buildDir/jacoco"
     }
 }
 
-task runRelease(dependsOn: 'installRelease') {
-    description 'Runs the release-flavour of the app on the connected device'
-    doLast {
-        exec{commandLine "$adb", "shell", "am", "start", "-n", "com.futurice.project/.MainActivity"}
-    }
-}
+// Get location of adb
+//Properties localProperties = new Properties()
+//try {
+//    localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+//}
+//catch (ex) {
+//    throw new InvalidUserDataException("You should define the path to your Android SDK as a " +
+//        "property `sdk.dir` in local.properties on the project root."
+//    )
+//}
+//def adb = localProperties.getProperty('sdk.dir') + '/platform-tools/adb'
+//
+//task runDebug(dependsOn: 'installDebug') {
+//    description 'Runs the debug-flavour of the app on the connected device'
+//    doLast {
+//        exec{commandLine "$adb", "shell", "am", "start", "-n", "com.futurice.project/.MainActivity"}
+//    }
+//}
+//
+//task runRelease(dependsOn: 'installRelease') {
+//    description 'Runs the release-flavour of the app on the connected device'
+//    doLast {
+//        exec{commandLine "$adb", "shell", "am", "start", "-n", "com.futurice.project/.MainActivity"}
+//    }
+//}

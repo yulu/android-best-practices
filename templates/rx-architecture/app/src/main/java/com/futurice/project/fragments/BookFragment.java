@@ -111,7 +111,7 @@ public class BookFragment extends Fragment {
                 return biographiesModel.getBookPrice(book.id);
             }})
             .map(new Func1<Integer, String>() { @Override public String call(Integer integer) {
-                return "Price: " + integer + " EUR";
+                return "Price: " + integer + " Dollar";
             }})
             .startWith("Loading price...");
     }
