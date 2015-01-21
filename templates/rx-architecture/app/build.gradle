@@ -25,7 +25,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
 
-    //device test
+    //instrumentation test
     androidTestCompile 'com.jakewharton.espresso:espresso:1.1-r3'
     androidTestCompile 'com.jakewharton.espresso:espresso-support-v4:1.1-r3'
     androidTestCompile 'com.squareup.spoon:spoon-client:1.1.2'
@@ -102,8 +102,6 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'LICENSE.txt'
     }
-    
-
 }
 
 //robolectric
