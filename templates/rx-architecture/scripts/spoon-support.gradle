@@ -1,0 +1,10 @@
+apply plugin: 'spoon'
+
+spoon {
+    debug = true
+    failIfNoDeviceConnected = true
+}
+
+dependencies {
+    androidTestCompile 'com.squareup.spoon:spoon-client:1.1.2'
+}

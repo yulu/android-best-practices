@@ -1,0 +1,31 @@
+apply plugin: 'jacoco'
+
+//jacoco setting
+jacoco {
+    toolVersion = "0.7.0.201403182114"
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
+    group = "Reporting"
+
+    description = "Generate Jacoco coverage reports for Android sources"
+
+    classDirectories = fileTree(
+            dir: './build/intermediates/classes/debug',
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+    )
+
+    def coverageSourceDirs = ['./src/main/java']
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files('./build/jacoco/testDebug.exec')
+
+    reports {
+        html.enabled = true
+        html.destination "$buildDir/jacoco"
+    }
+}
