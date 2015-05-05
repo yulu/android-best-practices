@@ -33,6 +33,20 @@ dependencies {
 //robolectric
 robolectric {
     include '**/*Test.class'
-    exclude '**/device/**/*.class'
+    exclude '**/device/**/*.class'    
+    
+    // configure max heap size of the test JVM
+    maxHeapSize = "2048m"
+
+    afterTest { descriptor, result ->
+        println "Executing test for ${descriptor.name} with result: ${result.resultType}"
+    }
 }
+
+task copyUTTask(type: Copy) {
+    from("$buildDir/test-report/")
+    into("./reports/non-device-test/")
+}
+
+test.finalizedBy copyUTTask
 

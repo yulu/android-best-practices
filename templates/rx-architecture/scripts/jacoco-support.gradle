@@ -2,7 +2,7 @@ apply plugin: 'jacoco'
 
 //jacoco setting
 jacoco {
-    toolVersion = "0.7.0.201403182114"
+    toolVersion = "0.7.1.201405082137"
 }
 
 task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
@@ -26,6 +26,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "test") {
 
     reports {
         html.enabled = true
-        html.destination "$buildDir/jacoco"
+        html.destination "./reports/non-device-cov"
     }
 }
